@@ -2,19 +2,20 @@
 
 speed=15
 size=1500x500+210+0
+name=${1:-dropterm}
 
 main() {
-  if [ -z $(xdo id -n dropterm) ]; then
+  if [ -z $(xdo id -n $name) ]; then
     wm=$(xprop -id $(xprop -root -notype _NET_SUPPORTING_WM_CHECK | awk '{print $NF}') -notype -f _NET_WM_NAME 8t | awk '/NAME/{ gsub(/"/,""); print $NF }')
     if [[ "$wm" == "bspwm" ]] ; then
-      bspc rule -a URxvt:dropterm sticky=on state=floating rectangle=$size
+      bspc rule -a URxvt:$name sticky=on state=floating rectangle=$size
     fi
-    urxvtc -name dropterm -e zsh -c "tmux new-session -A -s dropterm";
+    urxvtc -name $name -e zsh -c "tmux new-session -A -s $name";
   else
     wininfo
     if (($y < 0)) ; then
       move +$speed 
-      xdo activate -n dropterm
+      xdo activate -n $name
     else
       move -$speed
     fi
@@ -23,12 +24,12 @@ main() {
 
 move() {
   for ((i=0; i<=$height; i+=$speed)) ; do
-    xdo move -y $1 -n dropterm
+    xdo move -y $1 -n $name
   done
 }
 
 wininfo() {
-  id=$(xdo id -n dropterm)
+  id=$(xdo id -n $name)
   while read -a line ; do
     case ${line[*]} in
       Height:*) height=${line[1]} ;;
