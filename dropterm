@@ -5,8 +5,8 @@ size=1500x500+210+0
 name=${1:-dropterm}
 
 main() {
+  wm=$(xprop -id $(xprop -root -notype _NET_SUPPORTING_WM_CHECK | awk '{print $NF}') -notype -f _NET_WM_NAME 8t | awk '/NAME/{ gsub(/"/,""); print $NF }')
   if [ -z $(xdo id -n $name) ]; then
-    wm=$(xprop -id $(xprop -root -notype _NET_SUPPORTING_WM_CHECK | awk '{print $NF}') -notype -f _NET_WM_NAME 8t | awk '/NAME/{ gsub(/"/,""); print $NF }')
     if [[ "$wm" == "bspwm" ]] ; then
       bspc rule -a URxvt:$name sticky=on state=floating rectangle=$size
     fi
@@ -18,6 +18,7 @@ main() {
       xdo activate -n $name
     else
       move -$speed
+      [[ "$wm" == "bspwm" ]] && bspc node -f last
     fi
   fi
 }
