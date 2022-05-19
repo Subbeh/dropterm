@@ -11,6 +11,7 @@ main() {
       bspc rule -a URxvt:$name sticky=on state=floating rectangle=$size
     fi
     urxvtc -name $name -e zsh -c "tmux new-session -A -s $name";
+    xdo above -N Polybar -t $(xdo id -n $name)
   else
     wininfo
     if (($y < 0)) ; then
