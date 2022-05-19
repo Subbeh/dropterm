@@ -12,7 +12,12 @@ main() {
     urxvtc -name dropterm -e zsh -c "tmux new-session -A -s dropterm";
   else
     wininfo
-    (($y < 0)) && move +$speed || move -$speed
+    if (($y < 0)) ; then
+      move +$speed 
+      xdo activate -n dropterm
+    else
+      move -$speed
+    fi
   fi
 }
 
