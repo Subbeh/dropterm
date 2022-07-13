@@ -15,11 +15,13 @@ main() {
   else
     wininfo
     if (($y < 0)) ; then
-      move +$speed 
       xdo activate -n $name
+      xdo above -N Polybar -t $(xdo id -n $name)
+      move +$speed 
     else
       move -$speed
       [[ "$wm" == "bspwm" ]] && bspc node -f last
+      xdo below -N Polybar -t $(xdo id -n $name)
     fi
   fi
 }
