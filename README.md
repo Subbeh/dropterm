@@ -1,4 +1,4 @@
-# dropterm
+# dropterm (Dropdown Terminal)
 
 Simply run `./dropterm` or add it to your `PATH` (i.e. `~/.local/bin`) and bind a key to toggle the dropdown terminal.
 
