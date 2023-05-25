@@ -1,39 +1,36 @@
 #!/bin/bash
 
 speed=15
-size=1500x500+210+0
+size=1500x500+220+10
 name=${1:-dropterm}
 
 main() {
-  wm=$(xprop -id $(xprop -root -notype _NET_SUPPORTING_WM_CHECK | awk '{print $NF}') -notype -f _NET_WM_NAME 8t | awk '/NAME/{ gsub(/"/,""); print $NF }')
-  if [ -z $(xdo id -n $name) ]; then
-    if [[ "$wm" == "bspwm" ]] ; then
-      bspc rule -a URxvt:$name sticky=on state=floating rectangle=$size
-    fi
-    urxvtc -name $name -e zsh -c "tmux new-session -A -s $name";
-    xdo above -N Polybar -t $(xdo id -n $name)
+  if [ -z $(xdo id -a $name) ]; then
+      bspc rule -a "*:Alacritty:$name" sticky=on state=floating rectangle=$size
+    alacritty --title $name -e zsh -c "tmux new-session -A -s $name" & disown
+    xdo above -N Polybar -t $(xdo id -a $name) 2> /dev/null
   else
     wininfo
     if (($y < 0)) ; then
-      xdo activate -n $name
-      xdo above -N Polybar -t $(xdo id -n $name)
+      xdo activate -a $name
+      xdo above -N Polybar -t $(xdo id -a $name)
       move +$speed 
     else
       move -$speed
-      [[ "$wm" == "bspwm" ]] && bspc node -f last
-      xdo below -N Polybar -t $(xdo id -n $name)
+      bspc node -f last
+      xdo below -N Polybar -t $(xdo id -a $name)
     fi
   fi
 }
 
 move() {
   for ((i=0; i<=$height; i+=$speed)) ; do
-    xdo move -y $1 -n $name
+    xdo move -y $1 -a $name
   done
 }
 
 wininfo() {
-  id=$(xdo id -n $name)
+  id=$(xdo id -a $name)
   while read -a line ; do
     case ${line[*]} in
       Height:*) height=${line[1]} ;;
